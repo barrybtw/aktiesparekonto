@@ -57,7 +57,7 @@ export default function Questionnaire({
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div
             className={cn(
-              'flex flex-col space-y-2 md:space-y-3 box-border min-h-[150px]',
+              'flex flex-col space-y-1 md:space-y-2 box-border min-h-[150px]',
             )}
           >
             <FormField
