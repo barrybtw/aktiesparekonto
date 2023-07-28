@@ -11,8 +11,10 @@ export default function Projections() {
     ..._setters
   } = useCalculatorStore();
 
-  const value = useMemo(() => {
+  const { value, taxes } = useMemo(() => {
     let starting_value = 0;
+    let taxes_yearly_rate = 0.17;
+    let taxes_has_taken = 0;
     let monthly_rate = 1 + estimatedReturnInPercent / 100 / 12;
 
     // For each year
@@ -23,9 +25,14 @@ export default function Projections() {
         if (month != 0 || year != 0) starting_value *= monthly_rate;
         starting_value += monthlyPayment;
       }
+
+      // Pay taxes
+      let tax_to_pay = starting_value * taxes_yearly_rate;
+      taxes_has_taken += tax_to_pay;
+      starting_value -= tax_to_pay;
     }
 
-    return starting_value.toFixed(2);
+    return { value: starting_value.toFixed(2), taxes: taxes_has_taken };
   }, [monthlyPayment, estimatedReturnInPercent, yearsToLookAhead]);
 
   if (isNaN(monthlyPayment)) return null;
@@ -33,7 +40,7 @@ export default function Projections() {
   return (
     <div className='flex flex-col space-y-4'>
       Du har {value} DKK efter {yearsToLookAhead} med {estimatedReturnInPercent}
-      % forventet stigning per år.
+      % forventet stigning per år. Du har betalt {taxes.toFixed(2)} DKK i skat.
     </div>
   );
 }
