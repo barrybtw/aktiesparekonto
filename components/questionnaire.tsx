@@ -74,14 +74,21 @@ export default function Questionnaire({
                 <FormItem>
                   <FormLabel>Årlig Udbytteprocent</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      aria-invalid={
-                        form.formState.errors.estimated_return_in_percent
-                          ? 'true'
-                          : 'false'
-                      }
-                    />
+                    <div aria-label='wrapper' className='relative'>
+                      <Input
+                        {...field}
+                        aria-invalid={
+                          form.formState.errors.monthly_payment
+                            ? 'true'
+                            : 'false'
+                        }
+                        type='number'
+                        className='appearance-none'
+                      />
+                      <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
+                        %
+                      </pre>
+                    </div>
                   </FormControl>
                   <FormDescription>
                     Hvor meget regner du med at få i afkast om året?
