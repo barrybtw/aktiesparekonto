@@ -74,6 +74,7 @@ export default function Questionnaire({
                       aria-invalid={
                         form.formState.errors.monthly_payment ? 'true' : 'false'
                       }
+                      type='number'
                     />
                     {/* <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
                         dkk
