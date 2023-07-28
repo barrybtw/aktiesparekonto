@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main className=''>
       <Questionnaire></Questionnaire>
-      {/* <Projections></Projections> */}
+      <Projections></Projections>
     </main>
   );
 }

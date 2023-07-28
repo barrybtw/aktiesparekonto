@@ -20,6 +20,7 @@ import { useCalculatorStore } from '@/stores/calculator-store';
 const formSchema = z.object({
   monthly_payment: z.coerce.number().min(0),
   estimated_return_in_percent: z.coerce.number(),
+  years_to_look_ahead: z.coerce.number(),
 });
 
 export default function Questionnaire({
@@ -33,6 +34,7 @@ export default function Questionnaire({
     defaultValues: {
       monthly_payment: 500,
       estimated_return_in_percent: 5,
+      years_to_look_ahead: 10,
     },
   });
 
@@ -41,6 +43,7 @@ export default function Questionnaire({
     calculator_link.setEstimatedReturnInPercent(
       values.estimated_return_in_percent,
     );
+    calculator_link.setYearsToLookAhead(values.years_to_look_ahead);
   }
 
   return (
@@ -59,12 +62,19 @@ export default function Questionnaire({
                 <FormItem>
                   <FormLabel>Månedlig indskud</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      aria-invalid={
-                        form.formState.errors.monthly_payment ? 'true' : 'false'
-                      }
-                    />
+                    <div aria-label='wrapper' className='relative'>
+                      <Input
+                        {...field}
+                        aria-invalid={
+                          form.formState.errors.monthly_payment
+                            ? 'true'
+                            : 'false'
+                        }
+                      />
+                      <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
+                        dkk
+                      </pre>
+                    </div>
                   </FormControl>
                   <FormDescription>
                     Hvor meget kan du indbetale hver måned?
@@ -84,12 +94,11 @@ export default function Questionnaire({
                       <Input
                         {...field}
                         aria-invalid={
-                          form.formState.errors.monthly_payment
+                          form.formState.errors.estimated_return_in_percent
                             ? 'true'
                             : 'false'
                         }
                         type='number'
-                        className='appearance-none'
                       />
                       <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
                         %
@@ -98,6 +107,35 @@ export default function Questionnaire({
                   </FormControl>
                   <FormDescription>
                     Hvor meget regner du med at få i afkast om året?
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            ></FormField>
+            <FormField
+              control={form.control}
+              name='years_to_look_ahead'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>År til realisation</FormLabel>
+                  <FormControl>
+                    <div aria-label='wrapper' className='relative'>
+                      <Input
+                        {...field}
+                        aria-invalid={
+                          form.formState.errors.years_to_look_ahead
+                            ? 'true'
+                            : 'false'
+                        }
+                        type='number'
+                      />
+                      <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
+                        år
+                      </pre>
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    Hvor mange år er du villig til at vente på at realisere
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
