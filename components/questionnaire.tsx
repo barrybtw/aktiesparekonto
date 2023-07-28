@@ -62,19 +62,17 @@ export default function Questionnaire({
                 <FormItem>
                   <FormLabel>Månedlig indskud</FormLabel>
                   <FormControl>
-                    <div aria-label='wrapper' className='relative'>
-                      <Input
-                        {...field}
-                        aria-invalid={
-                          form.formState.errors.monthly_payment
-                            ? 'true'
-                            : 'false'
-                        }
-                      />
-                      <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
+                    {/* <div aria-label='wrapper' className='relative'> */}
+                    <Input
+                      {...field}
+                      aria-invalid={
+                        form.formState.errors.monthly_payment ? 'true' : 'false'
+                      }
+                    />
+                    {/* <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
                         dkk
                       </pre>
-                    </div>
+                    </div> */}
                   </FormControl>
                   <FormDescription>
                     Hvor meget kan du indbetale hver måned?
@@ -90,20 +88,20 @@ export default function Questionnaire({
                 <FormItem>
                   <FormLabel>Årlig Udbytteprocent</FormLabel>
                   <FormControl>
-                    <div aria-label='wrapper' className='relative'>
-                      <Input
-                        {...field}
-                        aria-invalid={
-                          form.formState.errors.estimated_return_in_percent
-                            ? 'true'
-                            : 'false'
-                        }
-                        type='number'
-                      />
-                      <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
+                    {/* <div aria-label='wrapper' className='relative'> */}
+                    <Input
+                      {...field}
+                      aria-invalid={
+                        form.formState.errors.estimated_return_in_percent
+                          ? 'true'
+                          : 'false'
+                      }
+                      type='number'
+                    />
+                    {/* <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
                         %
                       </pre>
-                    </div>
+                    </div> */}
                   </FormControl>
                   <FormDescription>
                     Hvor meget regner du med at få i afkast om året?
@@ -119,20 +117,20 @@ export default function Questionnaire({
                 <FormItem>
                   <FormLabel>År til realisation</FormLabel>
                   <FormControl>
-                    <div aria-label='wrapper' className='relative'>
-                      <Input
-                        {...field}
-                        aria-invalid={
-                          form.formState.errors.years_to_look_ahead
-                            ? 'true'
-                            : 'false'
-                        }
-                        type='number'
-                      />
-                      <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
+                    {/* <div aria-label='wrapper' className='relative'> */}
+                    <Input
+                      {...field}
+                      aria-invalid={
+                        form.formState.errors.years_to_look_ahead
+                          ? 'true'
+                          : 'false'
+                      }
+                      type='number'
+                    />
+                    {/* <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
                         år
-                      </pre>
-                    </div>
+                      </pre> */}
+                    {/* </div> */}
                   </FormControl>
                   <FormDescription>
                     Hvor mange år er du villig til at vente på at realisere
