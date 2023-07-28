@@ -28,6 +28,8 @@ export default function Projections() {
     return starting_value.toFixed(2);
   }, [monthlyPayment, estimatedReturnInPercent, yearsToLookAhead]);
 
+  if (isNaN(monthlyPayment)) return null;
+
   return (
     <div className='flex flex-col space-y-4'>
       Du har {value} DKK efter {yearsToLookAhead} med {estimatedReturnInPercent}
