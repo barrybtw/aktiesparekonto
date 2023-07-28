@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Separator } from '@/components/ui/separator';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
@@ -54,17 +55,17 @@ export default function Questionnaire({
   return (
     <div className={cn(className)} {...props}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <div
-            className={cn(
-              'flex flex-col space-y-1 md:space-y-2 box-border min-h-[150px]',
-            )}
-          >
+        {/* use grid to add a gap between formfields and button */}
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className='grid grid-cols-1 gap-8'
+        >
+          <div className={cn('flex flex-col box-border gap-8')}>
             <FormField
               control={form.control}
               name='monthly_payment'
               render={({ field }) => (
-                <FormItem className='min-h-[140px] md:min-h-[120px]'>
+                <FormItem className='flex flex-col gap-2'>
                   <FormLabel>Månedlig indskud</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
@@ -75,6 +76,7 @@ export default function Questionnaire({
                         form.formState.errors.monthly_payment ? 'true' : 'false'
                       }
                       type='number'
+                      min={0}
                     />
                     {/* <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
                         dkk
@@ -92,7 +94,7 @@ export default function Questionnaire({
               control={form.control}
               name='estimated_return_in_percent'
               render={({ field }) => (
-                <FormItem className='min-h-[140px] md:min-h-[120px]'>
+                <FormItem className='flex flex-col gap-2'>
                   <FormLabel>Årlig Udbytteprocent</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
@@ -122,7 +124,7 @@ export default function Questionnaire({
               control={form.control}
               name='years_to_look_ahead'
               render={({ field }) => (
-                <FormItem className='min-h-[140px] md:min-h-[120px] md:min-h-[100px]'>
+                <FormItem className='flex flex-col gap-2'>
                   <FormLabel>År til realisation</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
@@ -153,7 +155,11 @@ export default function Questionnaire({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button type='submit' className='relative inset-0'>
+                  <Button
+                    type='submit'
+                    variant='default'
+                    className='max-w-[280px]'
+                  >
                     Beregn
                   </Button>
                 </TooltipTrigger>
@@ -172,8 +178,8 @@ export default function Questionnaire({
                 <TooltipTrigger asChild>
                   <Button
                     type='submit'
-                    variant='destructive'
-                    className='relative inset-0'
+                    variant='default'
+                    className='max-w-[280px]'
                   >
                     Beregn
                   </Button>
