@@ -45,26 +45,26 @@ export default function Questionnaire({
     );
     calculator_link.setYearsToLookAhead(values.years_to_look_ahead);
   }
-
   return (
     <div className={cn(className)} {...props}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div
             className={cn(
-              'flex flex-row space-x-4 md:space-x-8 box-border min-h-[150px]',
+              'flex flex-col space-y-4 md:space-y-8 box-border min-h-[150px]',
             )}
           >
             <FormField
               control={form.control}
               name='monthly_payment'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='min-h-[99px]'>
                   <FormLabel>Månedlig indskud</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
                     <Input
                       {...field}
+                      className='max-w-[280px] my-2'
                       aria-invalid={
                         form.formState.errors.monthly_payment ? 'true' : 'false'
                       }
@@ -85,12 +85,13 @@ export default function Questionnaire({
               control={form.control}
               name='estimated_return_in_percent'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='min-h-[99px]'>
                   <FormLabel>Årlig Udbytteprocent</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
                     <Input
                       {...field}
+                      className='max-w-[280px] my-2'
                       aria-invalid={
                         form.formState.errors.estimated_return_in_percent
                           ? 'true'
@@ -114,12 +115,13 @@ export default function Questionnaire({
               control={form.control}
               name='years_to_look_ahead'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='min-h-[99px]'>
                   <FormLabel>År til realisation</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
                     <Input
                       {...field}
+                      className='max-w-[280px] my-2'
                       aria-invalid={
                         form.formState.errors.years_to_look_ahead
                           ? 'true'
