@@ -16,6 +16,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useCalculatorStore } from '@/stores/calculator-store';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 
 const formSchema = z.object({
   monthly_payment: z.coerce.number().min(0),
@@ -58,7 +64,7 @@ export default function Questionnaire({
               control={form.control}
               name='monthly_payment'
               render={({ field }) => (
-                <FormItem className='min-h-[99px]'>
+                <FormItem className='min-h-[140px] md:min-h-[100px]'>
                   <FormLabel>Månedlig indskud</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
@@ -85,7 +91,7 @@ export default function Questionnaire({
               control={form.control}
               name='estimated_return_in_percent'
               render={({ field }) => (
-                <FormItem className='min-h-[99px]'>
+                <FormItem className='min-h-[140px] md:min-h-[100px]'>
                   <FormLabel>Årlig Udbytteprocent</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
@@ -115,7 +121,7 @@ export default function Questionnaire({
               control={form.control}
               name='years_to_look_ahead'
               render={({ field }) => (
-                <FormItem className='min-h-[99px]'>
+                <FormItem className='min-h-[140px] md:min-h-[100px] md:min-h-[100px]'>
                   <FormLabel>År til realisation</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
@@ -142,9 +148,45 @@ export default function Questionnaire({
               )}
             ></FormField>
           </div>
-          <Button type='submit' className='relative inset-0'>
-            Beregn
-          </Button>
+          {form.formState.isValid ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button type='submit' className='relative inset-0'>
+                    Beregn
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {form.formState.isValid
+                      ? 'Tryk for at beregne'
+                      : 'Ugyldig input'}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type='submit'
+                    variant='destructive'
+                    className='relative inset-0'
+                  >
+                    Beregn
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {form.formState.isValid
+                      ? 'Tryk for at beregne'
+                      : 'Ugyldig input'}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </form>
       </Form>
     </div>
