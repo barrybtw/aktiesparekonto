@@ -1,12 +1,10 @@
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
-import { Raleway } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 
-const raleway = Raleway({
+const inter = Inter({
   subsets: ['latin'],
-  weight: '400',
-  display: 'swap',
 });
 
 export default function RootLayout({
@@ -16,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='dk' suppressHydrationWarning>
-      <body className={raleway.className}>
+      <body className={inter.className}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
           {children}
         </ThemeProvider>
