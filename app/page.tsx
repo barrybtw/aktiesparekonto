@@ -1,4 +1,4 @@
-import Navigation from '@/components/navigation';
+import Navigation from '@/components/Navigation';
 import Projections from '@/components/projections';
 import Questionnaire from '@/components/questionnaire';
 
