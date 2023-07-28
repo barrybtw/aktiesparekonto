@@ -39,8 +39,9 @@ export default function Projections() {
 
   return (
     <div className='flex flex-col space-y-4'>
-      Du har {value} DKK efter {yearsToLookAhead} med {estimatedReturnInPercent}
-      % forventet stigning per år. Du har betalt {taxes.toFixed(2)} DKK i skat.
+      Du har {value} DKK efter {yearsToLookAhead} år med{' '}
+      {estimatedReturnInPercent}% forventet stigning per annum. Du har betalt{' '}
+      {taxes.toFixed(2)} DKK i skat.
     </div>
   );
 }
