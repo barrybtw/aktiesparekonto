@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useCalculatorStore } from '@/stores/calculator-store';
 
 const formSchema = z.object({
   monthly_payment: z.coerce.number().min(0),
@@ -25,6 +26,8 @@ export default function Questionnaire({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const calculator_link = useCalculatorStore();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,11 +37,14 @@ export default function Questionnaire({
   });
 
   function handleSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    calculator_link.setMonthlyPayment(values.monthly_payment);
+    calculator_link.setEstimatedReturnInPercent(
+      values.estimated_return_in_percent,
+    );
   }
 
   return (
-    <div className={cn(className, '')} {...props}>
+    <div className={cn(className)} {...props}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div
@@ -98,7 +104,6 @@ export default function Questionnaire({
               )}
             ></FormField>
           </div>
-
           <Button type='submit' className='relative inset-0'>
             Beregn
           </Button>
