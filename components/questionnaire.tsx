@@ -64,7 +64,7 @@ export default function Questionnaire({
               control={form.control}
               name='monthly_payment'
               render={({ field }) => (
-                <FormItem className='min-h-[140px] md:min-h-[100px]'>
+                <FormItem className='min-h-[140px] md:min-h-[120px]'>
                   <FormLabel>Månedlig indskud</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
@@ -91,7 +91,7 @@ export default function Questionnaire({
               control={form.control}
               name='estimated_return_in_percent'
               render={({ field }) => (
-                <FormItem className='min-h-[140px] md:min-h-[100px]'>
+                <FormItem className='min-h-[140px] md:min-h-[120px]'>
                   <FormLabel>Årlig Udbytteprocent</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
@@ -121,7 +121,7 @@ export default function Questionnaire({
               control={form.control}
               name='years_to_look_ahead'
               render={({ field }) => (
-                <FormItem className='min-h-[140px] md:min-h-[100px] md:min-h-[100px]'>
+                <FormItem className='min-h-[140px] md:min-h-[120px] md:min-h-[100px]'>
                   <FormLabel>År til realisation</FormLabel>
                   <FormControl>
                     {/* <div aria-label='wrapper' className='relative'> */}
