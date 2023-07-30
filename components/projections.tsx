@@ -127,10 +127,15 @@ export default function Projections() {
 
   return (
     <div className='flex flex-col space-y-4'>
-      <Tabs defaultValue='years' className='w-full max-w-4xl'>
+      <Tabs
+        defaultValue='years'
+        className='w-full [max-width:560px]:overflow-x-scroll overflow-x-auto space-y-4'
+      >
         <TabsList>
           <TabsTrigger value='years'>År</TabsTrigger>
-          <TabsTrigger value='months'>Måneder</TabsTrigger>
+          <TabsTrigger value='months' disabled>
+            Måneder (Kommer snart)
+          </TabsTrigger>
         </TabsList>
         <TabsContent value='years'>
           <Table>
