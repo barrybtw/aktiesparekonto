@@ -8,7 +8,6 @@ type years = Partial<{
     value_this_year: number;
     profit_this_year: number;
     taxes_to_pay_this_year: number;
-    monthStore: months;
   };
 }>;
 type months = Partial<{
