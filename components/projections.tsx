@@ -147,27 +147,31 @@ export default function Projections() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Object.entries(allYearsWithMonthsInside).map(([year, data]) => {
-                console.log(data, year);
+              {Object.entries(allYearsWithMonthsInside as YearsData).map(
+                ([year, data]) => {
+                  console.log(data, year);
 
-                return (
-                  <TableRow key={year}>
-                    <TableHead aria-label='år nummer'>{+year + 1}</TableHead>
-                    <TableHead aria-label='indskudt mængde'>
-                      {Formatter.format(year + 1 * monthlyPayment * 12)}
-                    </TableHead>
-                    <TableHead aria-label='profit'>
-                      {Formatter.format(data?.profitThisYear ?? 0)}
-                    </TableHead>
-                    <TableHead aria-label='skat'>
-                      {Formatter.format(data?.taxesToPayThisYear ?? 0)}
-                    </TableHead>
-                    <TableHead className='text-right'>
-                      {Formatter.format(data?.valueThisYear ?? 0)}
-                    </TableHead>
-                  </TableRow>
-                );
-              })}
+                  return (
+                    <TableRow key={year}>
+                      <TableHead aria-label='år nummer'>{+year + 1}</TableHead>
+                      <TableHead aria-label='indskudt mængde'>
+                        {Formatter.format(
+                          (+year as number) + 1 * monthlyPayment * 12,
+                        )}
+                      </TableHead>
+                      <TableHead aria-label='profit'>
+                        {Formatter.format(data?.profitThisYear ?? 0)}
+                      </TableHead>
+                      <TableHead aria-label='skat'>
+                        {Formatter.format(data?.taxesToPayThisYear ?? 0)}
+                      </TableHead>
+                      <TableHead className='text-right'>
+                        {Formatter.format(data?.valueThisYear ?? 0)}
+                      </TableHead>
+                    </TableRow>
+                  );
+                },
+              )}
             </TableBody>
           </Table>
         </TabsContent>
