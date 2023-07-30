@@ -3,6 +3,11 @@
 import { useCalculatorStore } from '@/stores/calculator-store';
 import { useMemo } from 'react';
 
+const Formatter = new Intl.NumberFormat('da-DK', {
+  style: 'currency',
+  currency: 'DKK',
+});
+
 type YearsData = Partial<{
   [key: number]: {
     valueThisYear: number;
@@ -100,19 +105,20 @@ export default function Projections() {
 
   console.log(allYearsWithMonthsInside);
 
+  const formattedFinalValue = +finalValue;
+  const formattedMonthlyPaymentTotal = monthlyPayment * 12 * yearsToLookAhead;
+  const formattedFinalTaxes = +finalTaxes;
+  const formattedTotalEarnings = (
+    +finalValue -
+    monthlyPayment * 12 * yearsToLookAhead
+  ).toFixed(2);
+
   return (
     <div className='flex flex-col space-y-4'>
-      <p>Du har nu {finalValue} kr.</p>
-      <p>Du har indbetalt {monthlyPayment * 12 * yearsToLookAhead} kr.</p>
-      <p>Du har betalt {(finalTaxes as number).toLocaleString()} til skat</p>
-      <p>
-        Du har tjent{' '}
-        {(
-          (finalValue as number) -
-          monthlyPayment * 12 * yearsToLookAhead
-        ).toFixed(2)}{' '}
-        kr.
-      </p>
+      <p>Du har nu {Formatter.format(formattedFinalValue)}</p>
+      <p>Du har indbetalt {Formatter.format(formattedMonthlyPaymentTotal)}</p>
+      <p>Du har betalt {Formatter.format(formattedFinalTaxes)} til skat</p>
+      <p>Du har tjent {Formatter.format(formattedTotalEarnings)}</p>
     </div>
   );
 }
