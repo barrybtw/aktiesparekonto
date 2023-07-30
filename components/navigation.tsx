@@ -22,12 +22,12 @@ export default function Navigation({
       >
         Beregneren
       </Link>
-      <Link
+      {/* <Link
         href='/om'
         className='text-sm font-medium transition-colors text-zinc-400 hover:text-neutral-50'
       >
         Om projektet
-      </Link>
+      </Link> */}
     </nav>
   );
 }
