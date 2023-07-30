@@ -3,21 +3,23 @@
 import { useCalculatorStore } from '@/stores/calculator-store';
 import { useMemo } from 'react';
 
-type years = Partial<{
+type YearsData = Partial<{
   [key: number]: {
-    value_this_year: number;
-    profit_this_year: number;
-    taxes_to_pay_this_year: number;
-  };
-}>;
-type months = Partial<{
-  [key: number]: {
-    value_this_month: number;
-    profit_this_month: number;
+    valueThisYear: number;
+    profitThisYear: number;
+    taxesToPayThisYear: number;
+    monthsThisYear: MonthsData;
   };
 }>;
 
-const taxes_yearly_rate = 0.17 as const;
+type MonthsData = Partial<{
+  [key: number]: {
+    valueThisMonth: number;
+    profitThisMonth: number;
+  };
+}>;
+
+const taxesYearlyRate = 0.17 as const;
 
 export default function Projections() {
   const {
@@ -27,68 +29,90 @@ export default function Projections() {
     ..._setters
   } = useCalculatorStore();
 
-  const { value, taxes, stores } = useMemo(() => {
-    let monthStore = {} as months;
-    let yearStore = {} as years;
+  const { finalValue, finalTaxes, allYearsWithMonthsInside } = useMemo(() => {
+    // Initialize data stores
+    let monthStore = {} as MonthsData;
+    let yearStore = {} as YearsData;
 
-    if (isNaN(monthlyPayment)) return { value: 0, taxes: 0 };
+    // Check if monthly payment is not a number, return early
+    if (isNaN(monthlyPayment)) {
+      return { finalValue: 0, finalTaxes: 0 };
+    }
 
-    let from_start_to_end = 0;
-    let taxes_from_start_to_end = 0;
+    // Calculate monthly interest rate
+    const monthlyRate = 1 + estimatedReturnInPercent / 100 / 12;
 
-    let monthly_rate = 1 + estimatedReturnInPercent / 100 / 12;
+    // Initialize variables for final value and taxes
+    let fromStartToEnd = 0;
+    let taxesFromStartToEnd = 0;
 
+    // Loop through the specified number of years
     [...Array(yearsToLookAhead ?? 0)].forEach((_, year) => {
-      let profit_this_year = 0;
+      let profitThisYear = 0;
+
+      // Loop through 12 months for each year
       [...Array(12)].forEach((_, month) => {
-        let profit_this_month = 0;
-        // Ignore the first month since the you don't get the interest until the end of the month
-        if (month != 0 || year != 0)
-          profit_this_month =
-            from_start_to_end * monthly_rate - from_start_to_end;
+        let profitThisMonth = 0;
 
-        from_start_to_end += monthlyPayment + profit_this_month;
+        // Ignore the first month since you don't get the interest until the end of the month
+        if (month !== 0 || year !== 0) {
+          profitThisMonth = fromStartToEnd * monthlyRate - fromStartToEnd;
+        }
 
-        profit_this_year += profit_this_month;
+        // Calculate the total amount after adding monthly payment and interest
+        fromStartToEnd += monthlyPayment + profitThisMonth;
 
+        // Track the profit earned this year
+        profitThisYear += profitThisMonth;
+
+        // Store the data for the current month
         monthStore[month] = {
-          value_this_month: from_start_to_end,
-          profit_this_month: profit_this_month,
+          valueThisMonth: fromStartToEnd,
+          profitThisMonth: profitThisMonth,
         };
       });
 
       // Pay yearly taxes
-      let tax_to_pay = profit_this_year * taxes_yearly_rate;
-      taxes_from_start_to_end += tax_to_pay;
-      from_start_to_end -= tax_to_pay;
+      const taxToPay = profitThisYear * taxesYearlyRate;
+      taxesFromStartToEnd += taxToPay;
+      fromStartToEnd -= taxToPay;
 
+      // Store data for the current year
       yearStore[year] = {
-        value_this_year: from_start_to_end,
-        profit_this_year: profit_this_year,
-        taxes_to_pay_this_year: tax_to_pay,
+        valueThisYear: fromStartToEnd,
+        profitThisYear: profitThisYear,
+        taxesToPayThisYear: taxToPay,
+        monthsThisYear: { ...monthStore },
       };
     });
 
     return {
-      value: from_start_to_end.toFixed(2),
-      taxes: taxes_from_start_to_end.toFixed(2),
-      stores: {
-        monthStore,
-        yearStore,
-      },
+      finalValue: fromStartToEnd.toFixed(2) ?? 0,
+      finalTaxes: taxesFromStartToEnd.toFixed(2),
+      allYearsWithMonthsInside: yearStore,
     };
   }, [monthlyPayment, estimatedReturnInPercent, yearsToLookAhead]);
 
-  if (isNaN(monthlyPayment) || isNaN(yearsToLookAhead)) return null;
+  // Check if monthly payment or years to look ahead are not numbers, return null
+  if (isNaN(monthlyPayment) || isNaN(yearsToLookAhead)) {
+    return null;
+  }
 
-  console.table(stores?.monthStore);
-  console.table(stores?.yearStore);
+  console.log(allYearsWithMonthsInside);
 
   return (
     <div className='flex flex-col space-y-4'>
-      Du har {value} DKK efter {yearsToLookAhead} år med{' '}
-      {estimatedReturnInPercent}% forventet stigning per annum. Du har betalt{' '}
-      {taxes} DKK i skat.
+      <p>Du har nu {finalValue} kr.</p>
+      <p>Du har indbetalt {monthlyPayment * 12 * yearsToLookAhead} kr.</p>
+      <p>Du har betalt {(finalTaxes as number).toLocaleString()} til skat</p>
+      <p>
+        Du har tjent{' '}
+        {(
+          (finalValue as number) -
+          monthlyPayment * 12 * yearsToLookAhead
+        ).toFixed(2)}{' '}
+        kr.
+      </p>
     </div>
   );
 }
