@@ -2,6 +2,15 @@
 
 import { useCalculatorStore } from '@/stores/calculator-store';
 import { useMemo } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Formatter = new Intl.NumberFormat('da-DK', {
   style: 'currency',
@@ -103,20 +112,67 @@ export default function Projections() {
     return null;
   }
 
-  console.log(allYearsWithMonthsInside);
-
-  const formattedFinalValue = +finalValue;
-  const formattedMonthlyPaymentTotal = monthlyPayment * 12 * yearsToLookAhead;
-  const formattedFinalTaxes = +finalTaxes;
-  const formattedTotalEarnings =
-    +finalValue - monthlyPayment * 12 * yearsToLookAhead;
+  const formattedFinalValue = Formatter.format(+finalValue);
+  const formattedMonthlyPaymentTotal = Formatter.format(
+    monthlyPayment * 12 * yearsToLookAhead,
+  );
+  const formattedFinalTaxes = Formatter.format(+finalTaxes);
+  const formattedTotalEarnings = Formatter.format(
+    +finalValue - monthlyPayment * 12 * yearsToLookAhead,
+  );
 
   return (
     <div className='flex flex-col space-y-4'>
-      <p>Du har nu {Formatter.format(formattedFinalValue)}</p>
-      <p>Du har indbetalt {Formatter.format(formattedMonthlyPaymentTotal)}</p>
-      <p>Du har betalt {Formatter.format(formattedFinalTaxes)} til skat</p>
-      <p>Du har tjent {Formatter.format(formattedTotalEarnings)}</p>
+      <div>
+        <p>Du har nu {formattedFinalValue}</p>
+        <p>Du har indbetalt {formattedMonthlyPaymentTotal}</p>
+        <p>Du har betalt {formattedFinalTaxes} til skat</p>
+        <p>Du har tjent {formattedTotalEarnings}</p>
+      </div>
+      <Tabs defaultValue='years' className='w-full'>
+        <TabsList>
+          <TabsTrigger value='years'>År</TabsTrigger>
+          <TabsTrigger value='months'>Måneder</TabsTrigger>
+        </TabsList>
+        <TabsContent value='years'>
+          <Table>
+            <TableCaption>En oversigt over årene</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className='w-8'>År</TableHead>
+                <TableHead>Indskudt</TableHead>
+                <TableHead>Profit</TableHead>
+                <TableHead>Skat</TableHead>
+                <TableHead className='text-right'>Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Object.entries(allYearsWithMonthsInside).map(([year, data]) => {
+                console.log(data, year);
+
+                return (
+                  <TableRow key={year}>
+                    <TableHead aria-label='år nummer'>{+year + 1}</TableHead>
+                    <TableHead aria-label='indskudt mængde'>
+                      {Formatter.format(year + 1 * monthlyPayment * 12)}
+                    </TableHead>
+                    <TableHead aria-label='profit'>
+                      {Formatter.format(data?.profitThisYear ?? 0)}
+                    </TableHead>
+                    <TableHead aria-label='skat'>
+                      {Formatter.format(data?.taxesToPayThisYear ?? 0)}
+                    </TableHead>
+                    <TableHead className='text-right'>
+                      {Formatter.format(data?.valueThisYear ?? 0)}
+                    </TableHead>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TabsContent>
+        <TabsContent value='months'></TabsContent>
+      </Tabs>
     </div>
   );
 }
