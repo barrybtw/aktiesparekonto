@@ -108,10 +108,8 @@ export default function Projections() {
   const formattedFinalValue = +finalValue;
   const formattedMonthlyPaymentTotal = monthlyPayment * 12 * yearsToLookAhead;
   const formattedFinalTaxes = +finalTaxes;
-  const formattedTotalEarnings = (
-    +finalValue -
-    monthlyPayment * 12 * yearsToLookAhead
-  ).toFixed(2);
+  const formattedTotalEarnings =
+    +finalValue - monthlyPayment * 12 * yearsToLookAhead;
 
   return (
     <div className='flex flex-col space-y-4'>
