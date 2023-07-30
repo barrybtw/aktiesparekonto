@@ -56,10 +56,10 @@ export default function Questionnaire({
       {/* use grid to add a gap between formfields and button */}
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className={cn('grid grid-cols-1 gap-8', className)}
+        className={cn('space-y-12 grid-cols-1 gap-8', className)}
         {...props}
       >
-        <div className={cn('flex flex-col box-border gap-8')}>
+        <div className={cn('space-y-8')}>
           <FormField
             control={form.control}
             name='monthly_payment'
@@ -150,49 +150,9 @@ export default function Questionnaire({
             )}
           ></FormField>
         </div>
-        {form.formState.isValid ? (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type='submit'
-                  variant='default'
-                  className='max-w-[280px]'
-                >
-                  Beregn
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {form.formState.isValid
-                    ? 'Tryk for at beregne'
-                    : 'Ugyldig input'}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        ) : (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type='submit'
-                  variant='default'
-                  className='max-w-[280px]'
-                >
-                  Beregn
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {form.formState.isValid
-                    ? 'Tryk for at beregne'
-                    : 'Ugyldig input'}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
+        <Button type='submit' variant='default' className='max-w-[280px]'>
+          Beregn
+        </Button>
       </form>
     </Form>
   );
