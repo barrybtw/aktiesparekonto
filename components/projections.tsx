@@ -21,7 +21,9 @@ type YearsData = Partial<{
   [key: number]: {
     valueThisYear: number;
     profitThisYear: number;
+    profitToThisYear: number;
     taxesToPayThisYear: number;
+    taxesToPayToThisYear: number;
     monthsThisYear: MonthsData;
   };
 }>;
@@ -30,20 +32,17 @@ type MonthsData = Partial<{
   [key: number]: {
     valueThisMonth: number;
     profitThisMonth: number;
+    profitToThisMonth: number;
   };
 }>;
 
 const taxesYearlyRate = 0.17 as const;
 
 export default function Projections() {
-  const {
-    monthlyPayment,
-    estimatedReturnInPercent,
-    yearsToLookAhead,
-    ..._setters
-  } = useCalculatorStore();
+  const { monthlyPayment, estimatedReturnInPercent, yearsToLookAhead } =
+    useCalculatorStore();
 
-  const { finalValue, finalTaxes, allYearsWithMonthsInside } = useMemo(() => {
+  const { allYearsWithMonthsInside } = useMemo(() => {
     // Initialize data stores
     let monthStore = {} as MonthsData;
     let yearStore = {} as YearsData;
@@ -59,6 +58,7 @@ export default function Projections() {
     // Initialize variables for final value and taxes
     let fromStartToEnd = 0;
     let taxesFromStartToEnd = 0;
+    let profitFomStartToEnd = 0;
 
     // Loop through the specified number of years
     [...Array(yearsToLookAhead ?? 0)].forEach((_, year) => {
@@ -78,11 +78,13 @@ export default function Projections() {
 
         // Track the profit earned this year
         profitThisYear += profitThisMonth;
+        profitFomStartToEnd += profitThisMonth;
 
         // Store the data for the current month
         monthStore[month] = {
           valueThisMonth: fromStartToEnd,
           profitThisMonth: profitThisMonth,
+          profitToThisMonth: profitThisYear,
         };
       });
 
@@ -95,14 +97,16 @@ export default function Projections() {
       yearStore[year] = {
         valueThisYear: fromStartToEnd,
         profitThisYear: profitThisYear,
+        profitToThisYear: profitFomStartToEnd,
         taxesToPayThisYear: taxToPay,
+        taxesToPayToThisYear: taxesFromStartToEnd,
         monthsThisYear: { ...monthStore },
       };
     });
 
     return {
-      finalValue: fromStartToEnd.toFixed(2) ?? 0,
-      finalTaxes: taxesFromStartToEnd.toFixed(2),
+      // finalValue: fromStartToEnd.toFixed(2) ?? 0,
+      // finalTaxes: taxesFromStartToEnd.toFixed(2),
       allYearsWithMonthsInside: yearStore,
     };
   }, [monthlyPayment, estimatedReturnInPercent, yearsToLookAhead]);
@@ -112,24 +116,18 @@ export default function Projections() {
     return null;
   }
 
-  const formattedFinalValue = Formatter.format(+finalValue);
-  const formattedMonthlyPaymentTotal = Formatter.format(
-    monthlyPayment * 12 * yearsToLookAhead,
-  );
-  const formattedFinalTaxes = Formatter.format(+finalTaxes);
-  const formattedTotalEarnings = Formatter.format(
-    +finalValue - monthlyPayment * 12 * yearsToLookAhead,
-  );
+  // const formattedFinalValue = Formatter.format(+finalValue);
+  // const formattedMonthlyPaymentTotal = Formatter.format(
+  //   monthlyPayment * 12 * yearsToLookAhead,
+  // );
+  // const formattedFinalTaxes = Formatter.format(+finalTaxes);
+  // const formattedTotalEarnings = Formatter.format(
+  //   +finalValue - monthlyPayment * 12 * yearsToLookAhead,
+  // );
 
   return (
     <div className='flex flex-col space-y-4'>
-      <div>
-        <p>Du har nu {formattedFinalValue}</p>
-        <p>Du har indbetalt {formattedMonthlyPaymentTotal}</p>
-        <p>Du har betalt {formattedFinalTaxes} til skat</p>
-        <p>Du har tjent {formattedTotalEarnings}</p>
-      </div>
-      <Tabs defaultValue='years' className='w-full'>
+      <Tabs defaultValue='years' className='w-full max-w-4xl'>
         <TabsList>
           <TabsTrigger value='years'>År</TabsTrigger>
           <TabsTrigger value='months'>Måneder</TabsTrigger>
@@ -139,14 +137,25 @@ export default function Projections() {
             <TableCaption>En oversigt over årene</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className='w-8'>År</TableHead>
-                <TableHead>Indskudt</TableHead>
-                <TableHead>Profit</TableHead>
-                <TableHead>Skat</TableHead>
-                <TableHead className='text-right'>Total</TableHead>
+                <TableHead className='w-20'>Udgangsår</TableHead>
+                <TableHead>Indskudt til dato</TableHead>
+                <TableHead>Profit til dags dato</TableHead>
+                <TableHead>Skat til dags dato</TableHead>
+                <TableHead className='text-right'>Total efter skat</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
+              <TableRow key={'magicone'}>
+                <TableHead aria-label='år nummer'>Start</TableHead>
+                <TableHead aria-label='indskudt mængde'>
+                  {Formatter.format(monthlyPayment * 12)}
+                </TableHead>
+                <TableHead aria-label='profit'>{Formatter.format(0)}</TableHead>
+                <TableHead aria-label='skat'>{Formatter.format(0)}</TableHead>
+                <TableHead className='text-right'>
+                  {Formatter.format(monthlyPayment * 12)}
+                </TableHead>
+              </TableRow>
               {Object.entries(allYearsWithMonthsInside as YearsData).map(
                 ([year, data]) => {
                   console.log(data, year);
@@ -159,11 +168,11 @@ export default function Projections() {
                           ((+year + 1) as number) * (monthlyPayment * 12),
                         )}
                       </TableHead>
-                      <TableHead aria-label='profit'>
-                        {Formatter.format(data?.profitThisYear ?? 0)}
+                      <TableHead aria-label='profit dette år'>
+                        {Formatter.format(data?.profitToThisYear ?? 0)}
                       </TableHead>
-                      <TableHead aria-label='skat'>
-                        {Formatter.format(data?.taxesToPayThisYear ?? 0)}
+                      <TableHead aria-label='skat dette år'>
+                        {Formatter.format(data?.taxesToPayToThisYear ?? 0)}
                       </TableHead>
                       <TableHead className='text-right'>
                         {Formatter.format(data?.valueThisYear ?? 0)}
