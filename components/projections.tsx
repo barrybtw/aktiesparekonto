@@ -156,7 +156,7 @@ export default function Projections() {
                       <TableHead aria-label='år nummer'>{+year + 1}</TableHead>
                       <TableHead aria-label='indskudt mængde'>
                         {Formatter.format(
-                          (+year as number) + 1 * monthlyPayment * 12,
+                          ((+year + 1) as number) * (monthlyPayment * 12),
                         )}
                       </TableHead>
                       <TableHead aria-label='profit'>
