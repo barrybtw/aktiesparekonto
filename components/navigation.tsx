@@ -17,6 +17,12 @@ export default function Navigation({
         Forside
       </Link>
       <Link
+        href='/beregneren'
+        className='text-sm font-medium transition-colors text-zinc-400 hover:text-neutral-50'
+      >
+        Beregneren
+      </Link>
+      <Link
         href='/om'
         className='text-sm font-medium transition-colors text-zinc-400 hover:text-neutral-50'
       >

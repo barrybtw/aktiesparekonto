@@ -12,9 +12,9 @@ type CalculatorStore = {
 };
 
 export const useCalculatorStore = create<CalculatorStore>()((set) => ({
-  monthlyPayment: NaN,
-  estimatedReturnInPercent: NaN,
-  yearsToLookAhead: NaN,
+  monthlyPayment: 500,
+  estimatedReturnInPercent: 5,
+  yearsToLookAhead: 10,
   setMonthlyPayment: (monthlyPayment: number) =>
     set((state) => ({ ...state, monthlyPayment })),
   setEstimatedReturnInPercent: (estimatedReturnInPercent: number) =>

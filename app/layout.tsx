@@ -18,10 +18,10 @@ export default function RootLayout({
     <html lang='dk' suppressHydrationWarning>
       <body className={cn(inter.className, '')}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <div className='flex items-center h-16 px-4 md:px-12'>
+          <div className='flex items-center justify-start h-16 px-4 md:px-12'>
             <Navigation className='' />
           </div>
-          <div className='px-4 md:px-12'>{children}</div>
+          <div className='px-4 mx-auto mt-8 md:px-12'>{children}</div>
         </ThemeProvider>
         <Toaster />
       </body>

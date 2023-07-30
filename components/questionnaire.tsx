@@ -70,7 +70,7 @@ export default function Questionnaire({
                   {/* <div aria-label='wrapper' className='relative'> */}
                   <Input
                     {...field}
-                    className='max-w-[280px] my-2'
+                    className='max-w-[280px] my-2 w-10/12'
                     aria-invalid={
                       form.formState.errors.monthly_payment ? 'true' : 'false'
                     }

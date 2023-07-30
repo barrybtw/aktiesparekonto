@@ -11,6 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 const Formatter = new Intl.NumberFormat('da-DK', {
   style: 'currency',
@@ -38,7 +39,10 @@ type MonthsData = Partial<{
 
 const taxesYearlyRate = 0.17 as const;
 
-export default function Projections() {
+export default function Projections({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLElement>) {
   const { monthlyPayment, estimatedReturnInPercent, yearsToLookAhead } =
     useCalculatorStore();
 
@@ -126,7 +130,7 @@ export default function Projections() {
   // );
 
   return (
-    <div className='flex flex-col space-y-4'>
+    <div className={cn(className, 'flex flex-col space-y-4')}>
       <Tabs
         defaultValue='years'
         className='w-full [max-width:560px]:overflow-x-scroll overflow-x-auto space-y-4'
@@ -163,8 +167,6 @@ export default function Projections() {
               </TableRow>
               {Object.entries(allYearsWithMonthsInside as YearsData).map(
                 ([year, data]) => {
-                  console.log(data, year);
-
                   return (
                     <TableRow key={year}>
                       <TableHead aria-label='år nummer'>{+year + 1}</TableHead>
