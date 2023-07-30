@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='dk' suppressHydrationWarning>
+    <html lang='da' suppressHydrationWarning>
       <body className={cn(inter.className, '')}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
           <div className='flex items-center justify-start h-16 px-4 md:px-12'>
