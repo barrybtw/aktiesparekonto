@@ -133,7 +133,7 @@ export default function Projections({
     <div className={cn(className, 'flex flex-col space-y-4')}>
       <Tabs
         defaultValue='years'
-        className='w-full [max-width:560px]:overflow-x-scroll overflow-x-auto space-y-4'
+        className='[max-width:520px]:overflow-x-scroll w-full overflow-x-auto space-y-4'
       >
         <TabsList>
           <TabsTrigger value='years'>År</TabsTrigger>
@@ -141,12 +141,12 @@ export default function Projections({
             Måneder (Kommer snart)
           </TabsTrigger>
         </TabsList>
-        <TabsContent value='years'>
+        <TabsContent value='years' className=''>
           <Table>
             <TableCaption>En oversigt over årene</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className='w-20'>Udgangsår</TableHead>
+                <TableHead>Udgangsår</TableHead>
                 <TableHead>Indskudt til dato</TableHead>
                 <TableHead>Profit til dags dato</TableHead>
                 <TableHead>Skat til dags dato</TableHead>
