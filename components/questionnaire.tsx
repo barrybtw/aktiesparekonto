@@ -71,9 +71,7 @@ export default function Questionnaire({
                   <Input
                     {...field}
                     className='max-w-[280px] my-2'
-                    aria-invalid={
-                      form.formState.errors.monthly_payment ? 'true' : 'false'
-                    }
+                    aria-invalid={!!form.formState.errors.monthly_payment}
                     type='number'
                     min={0}
                   />
@@ -96,9 +94,7 @@ export default function Questionnaire({
                     {...field}
                     className='max-w-[280px] my-2'
                     aria-invalid={
-                      form.formState.errors.estimated_return_in_percent
-                        ? 'true'
-                        : 'false'
+                      !!form.formState.errors.estimated_return_in_percent
                     }
                     type='number'
                   />
@@ -120,11 +116,7 @@ export default function Questionnaire({
                   <Input
                     {...field}
                     className='max-w-[280px] my-2'
-                    aria-invalid={
-                      form.formState.errors.years_to_look_ahead
-                        ? 'true'
-                        : 'false'
-                    }
+                    aria-invalid={!!form.formState.errors.years_to_look_ahead}
                     type='number'
                   />
                 </FormControl>
