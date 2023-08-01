@@ -7,7 +7,7 @@ interface CalculateProps {
   taxRate: number;
 }
 
-export type YearlyProgress = Partial<{
+export type YearlyProgress = {
   [year: number]: {
     valueThisYear: number;
     profitThisYear: number;
@@ -15,16 +15,16 @@ export type YearlyProgress = Partial<{
     taxesThisYear: number;
     taxesToThisYear: number;
   };
-}>;
+};
 
-export type MonthlyProgress = Partial<{
+export type MonthlyProgress = {
   [month: number]: {
     valueThisMonth: number;
     profitThisMonth: number;
     profitToThisMonth: number;
     taxesPaidSoFar: number;
   };
-}>;
+};
 
 function calculate(
   years: number,

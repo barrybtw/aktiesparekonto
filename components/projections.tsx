@@ -109,7 +109,7 @@ export default function Projections({
             <TableCaption>En oversigt over årene</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Udgangsår</TableHead>
+                <TableHead>Udgangsmåned</TableHead>
                 <TableHead className='text-right'>Indskudt</TableHead>
                 <TableHead className='text-right'>Profit</TableHead>
                 <TableHead className='text-right'>Total profit</TableHead>
