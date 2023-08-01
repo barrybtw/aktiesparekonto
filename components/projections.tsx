@@ -12,11 +12,23 @@ import {
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { useStockCalculator } from '@/lib/calculate';
 
-const Formatter = new Intl.NumberFormat('da-DK', {
+const IntlFormatter = new Intl.NumberFormat('da-DK', {
   style: 'currency',
   currency: 'DKK',
 });
+
+const Formatter = (value: number | `${number}`, decimals: number = 2) => {
+  let int = +value;
+  if (Number.isNaN(int)) {
+    throw new Error('Formatter only accepts numbers');
+  }
+
+  int = +int.toFixed(decimals);
+
+  return IntlFormatter.format(int);
+};
 
 type YearsData = Partial<{
   [key: number]: {
@@ -46,88 +58,21 @@ export default function Projections({
   const { monthlyPayment, estimatedReturnInPercent, yearsToLookAhead } =
     useCalculatorStore();
 
-  const { allYearsWithMonthsInside } = useMemo(() => {
-    // Initialize data stores
-    let monthStore = {} as MonthsData;
-    let yearStore = {} as YearsData;
+  let {
+    totals,
+    individualProgress: { monthly: monthlyProgress, yearly: yearlyProgress },
+  } = useStockCalculator({
+    interestRate: estimatedReturnInPercent,
+    monthlyDeposit: monthlyPayment,
+    taxRate: 0.17,
+    years: yearsToLookAhead,
+  });
 
-    // Check if monthly payment is not a number, return early
-    if (isNaN(monthlyPayment)) {
-      return { finalValue: 0, finalTaxes: 0 };
-    }
+  console.log({ totals, monthlyProgress, yearlyProgress });
 
-    // Calculate monthly interest rate
-    const monthlyRate = 1 + estimatedReturnInPercent / 100 / 12;
-
-    // Initialize variables for final value and taxes
-    let fromStartToEnd = 0;
-    let taxesFromStartToEnd = 0;
-    let profitFomStartToEnd = 0;
-
-    // Loop through the specified number of years
-    [...Array(yearsToLookAhead ?? 0)].forEach((_, year) => {
-      let profitThisYear = 0;
-
-      // Loop through 12 months for each year
-      [...Array(12)].forEach((_, month) => {
-        let profitThisMonth = 0;
-
-        // Ignore the first month since you don't get the interest until the end of the month
-        if (month !== 0 || year !== 0) {
-          profitThisMonth = fromStartToEnd * monthlyRate - fromStartToEnd;
-        }
-
-        // Calculate the total amount after adding monthly payment and interest
-        fromStartToEnd += monthlyPayment + profitThisMonth;
-
-        // Track the profit earned this year
-        profitThisYear += profitThisMonth;
-        profitFomStartToEnd += profitThisMonth;
-
-        // Store the data for the current month
-        monthStore[month] = {
-          valueThisMonth: fromStartToEnd,
-          profitThisMonth: profitThisMonth,
-          profitToThisMonth: profitThisYear,
-        };
-      });
-
-      // Pay yearly taxes
-      const taxToPay = profitThisYear * taxesYearlyRate;
-      taxesFromStartToEnd += taxToPay;
-      fromStartToEnd -= taxToPay;
-
-      // Store data for the current year
-      yearStore[year] = {
-        valueThisYear: fromStartToEnd,
-        profitThisYear: profitThisYear,
-        profitToThisYear: profitFomStartToEnd,
-        taxesToPayThisYear: taxToPay,
-        taxesToPayToThisYear: taxesFromStartToEnd,
-        monthsThisYear: { ...monthStore },
-      };
-    });
-
-    return {
-      // finalValue: fromStartToEnd.toFixed(2) ?? 0,
-      // finalTaxes: taxesFromStartToEnd.toFixed(2),
-      allYearsWithMonthsInside: yearStore,
-    };
-  }, [monthlyPayment, estimatedReturnInPercent, yearsToLookAhead]);
-
-  // Check if monthly payment or years to look ahead are not numbers, return null
-  if (isNaN(monthlyPayment) || isNaN(yearsToLookAhead)) {
+  if (typeof yearlyProgress === 'undefined') {
     return null;
   }
-
-  // const formattedFinalValue = Formatter.format(+finalValue);
-  // const formattedMonthlyPaymentTotal = Formatter.format(
-  //   monthlyPayment * 12 * yearsToLookAhead,
-  // );
-  // const formattedFinalTaxes = Formatter.format(+finalTaxes);
-  // const formattedTotalEarnings = Formatter.format(
-  //   +finalValue - monthlyPayment * 12 * yearsToLookAhead,
-  // );
 
   return (
     <div className={cn(className, 'flex flex-col space-y-4')}>
@@ -137,9 +82,7 @@ export default function Projections({
       >
         <TabsList>
           <TabsTrigger value='years'>År</TabsTrigger>
-          <TabsTrigger value='months' disabled>
-            Måneder (Kommer snart)
-          </TabsTrigger>
+          <TabsTrigger value='months'>Måneder</TabsTrigger>
         </TabsList>
         <TabsContent value='years' className=''>
           <Table>
@@ -157,41 +100,110 @@ export default function Projections({
               <TableRow key={'magicone'}>
                 <TableHead aria-label='år nummer'>Start</TableHead>
                 <TableHead aria-label='indskudt mængde'>
-                  {Formatter.format(monthlyPayment * 12)}
+                  {Formatter(monthlyPayment * 12)}
                 </TableHead>
-                <TableHead aria-label='profit'>{Formatter.format(0)}</TableHead>
-                <TableHead aria-label='skat'>{Formatter.format(0)}</TableHead>
+                <TableHead aria-label='profit'>{Formatter(0)}</TableHead>
+                <TableHead aria-label='skat'>{Formatter(0)}</TableHead>
                 <TableHead className='text-right'>
-                  {Formatter.format(monthlyPayment * 12)}
+                  {Formatter(monthlyPayment * 12)}
                 </TableHead>
               </TableRow>
-              {Object.entries(allYearsWithMonthsInside as YearsData).map(
-                ([year, data]) => {
-                  return (
-                    <TableRow key={year}>
-                      <TableHead aria-label='år nummer'>{+year + 1}</TableHead>
-                      <TableHead aria-label='indskudt mængde'>
-                        {Formatter.format(
-                          ((+year + 1) as number) * (monthlyPayment * 12),
-                        )}
-                      </TableHead>
-                      <TableHead aria-label='profit dette år'>
-                        {Formatter.format(data?.profitToThisYear ?? 0)}
-                      </TableHead>
-                      <TableHead aria-label='skat dette år'>
-                        {Formatter.format(data?.taxesToPayToThisYear ?? 0)}
-                      </TableHead>
-                      <TableHead className='text-right'>
-                        {Formatter.format(data?.valueThisYear ?? 0)}
-                      </TableHead>
-                    </TableRow>
-                  );
-                },
-              )}
+              {yearlyProgress.map((year, yearIndex) => {
+                if (typeof year === 'undefined') {
+                  return null;
+                }
+                const {
+                  valueThisYear,
+                  profitThisYear,
+                  profitToThisYear,
+                  taxesThisYear,
+                  taxesToThisYear,
+                } = year;
+                return (
+                  <TableRow key={valueThisYear}>
+                    <TableHead aria-label='år nummer'>
+                      {yearIndex + 1}
+                    </TableHead>
+                    <TableHead aria-label='indskudt mængde'>
+                      {Formatter((yearIndex + 1) * (monthlyPayment * 12))}
+                    </TableHead>
+                    <TableHead aria-label='profit dette år'>
+                      {Formatter(profitThisYear)}
+                    </TableHead>
+                    <TableHead aria-label='skat dette år'>
+                      {Formatter(taxesThisYear)}
+                    </TableHead>
+                    <TableHead className='text-right'>
+                      {Formatter(valueThisYear)}
+                    </TableHead>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TabsContent>
-        <TabsContent value='months'></TabsContent>
+        <TabsContent value='months'>
+          <Table>
+            <TableCaption>En oversigt over årene</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Udgangsår</TableHead>
+                <TableHead>Indskudt</TableHead>
+                <TableHead>Profit</TableHead>
+                <TableHead>Total profit</TableHead>
+                <TableHead>Skat</TableHead>
+                <TableHead className='text-right'>Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow key={'magictwo'}>
+                <TableHead aria-label='år nummer'>Start</TableHead>
+                <TableHead aria-label='indskudt mængde'>
+                  {Formatter(monthlyPayment)}
+                </TableHead>
+                <TableHead aria-label='profit'></TableHead>
+                <TableHead aria-label='profit'></TableHead>
+                <TableHead aria-label='skat'></TableHead>
+                <TableHead className='text-right'>
+                  {Formatter(monthlyPayment)}
+                </TableHead>
+              </TableRow>
+              {monthlyProgress.map((month, monthIndex) => {
+                if (typeof month === 'undefined') {
+                  return null;
+                }
+                const {
+                  valueThisMonth,
+                  profitThisMonth,
+                  profitToThisMonth,
+                  taxesPaidSoFar,
+                } = month;
+                return (
+                  <TableRow key={valueThisMonth}>
+                    <TableHead aria-label='år nummer'>
+                      {monthIndex + 1}
+                    </TableHead>
+                    <TableHead aria-label='indskudt mængde'>
+                      {Formatter((monthIndex + 1) * monthlyPayment)}
+                    </TableHead>
+                    <TableHead aria-label='profit dette år'>
+                      {Formatter(profitThisMonth)}
+                    </TableHead>
+                    <TableHead aria-label='profit dette år'>
+                      {Formatter(profitToThisMonth)}
+                    </TableHead>
+                    <TableHead aria-label='skat dette år'>
+                      {Formatter(taxesPaidSoFar)}
+                    </TableHead>
+                    <TableHead className='text-right'>
+                      {Formatter(valueThisMonth)}
+                    </TableHead>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TabsContent>
       </Tabs>
     </div>
   );
