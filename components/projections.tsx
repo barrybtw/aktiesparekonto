@@ -14,10 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { useStockCalculator } from '@/lib/calculate';
 
-const IntlFormatter = new Intl.NumberFormat('da-DK', {
-  style: 'currency',
-  currency: 'DKK',
-});
+const IntlFormatter = new Intl.NumberFormat('da-DK');
 
 const Formatter = (value: number | `${number}`, decimals: number = 2) => {
   let int = +value;
@@ -30,27 +27,6 @@ const Formatter = (value: number | `${number}`, decimals: number = 2) => {
   return IntlFormatter.format(int);
 };
 
-type YearsData = Partial<{
-  [key: number]: {
-    valueThisYear: number;
-    profitThisYear: number;
-    profitToThisYear: number;
-    taxesToPayThisYear: number;
-    taxesToPayToThisYear: number;
-    monthsThisYear: MonthsData;
-  };
-}>;
-
-type MonthsData = Partial<{
-  [key: number]: {
-    valueThisMonth: number;
-    profitThisMonth: number;
-    profitToThisMonth: number;
-  };
-}>;
-
-const taxesYearlyRate = 0.17 as const;
-
 export default function Projections({
   className,
   ...props
@@ -59,7 +35,6 @@ export default function Projections({
     useCalculatorStore();
 
   let {
-    totals,
     individualProgress: { monthly: monthlyProgress, yearly: yearlyProgress },
   } = useStockCalculator({
     interestRate: estimatedReturnInPercent,
@@ -82,30 +57,21 @@ export default function Projections({
           <TabsTrigger value='years'>År</TabsTrigger>
           <TabsTrigger value='months'>Måneder</TabsTrigger>
         </TabsList>
-        <TabsContent value='years' className=''>
+        <TabsContent value='years'>
           <Table>
             <TableCaption>En oversigt over årene</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Udgangsår</TableHead>
-                <TableHead>Indskudt til dato</TableHead>
-                <TableHead>Profit til dags dato</TableHead>
-                <TableHead>Skat til dags dato</TableHead>
-                <TableHead className='text-right'>Total efter skat</TableHead>
+                <TableHead className=''>Udgangsår</TableHead>
+                <TableHead className='text-right'>Indskudt</TableHead>
+                <TableHead className='text-right'>Profit</TableHead>
+                <TableHead className='text-right'>Skat</TableHead>
+                <TableHead className='text-right '>
+                  Total efter skat (DKK)
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow key={'magicone'}>
-                <TableHead aria-label='år nummer'>Start</TableHead>
-                <TableHead aria-label='indskudt mængde'>
-                  {Formatter(monthlyPayment * 12)}
-                </TableHead>
-                <TableHead aria-label='profit'>{Formatter(0)}</TableHead>
-                <TableHead aria-label='skat'>{Formatter(0)}</TableHead>
-                <TableHead className='text-right'>
-                  {Formatter(monthlyPayment * 12)}
-                </TableHead>
-              </TableRow>
               {yearlyProgress.map((year, yearIndex) => {
                 if (typeof year === 'undefined') {
                   return null;
@@ -119,16 +85,14 @@ export default function Projections({
                 } = year;
                 return (
                   <TableRow key={valueThisYear}>
-                    <TableHead aria-label='år nummer'>
-                      {yearIndex + 1}
-                    </TableHead>
-                    <TableHead aria-label='indskudt mængde'>
+                    <TableHeader>{yearIndex + 1}</TableHeader>
+                    <TableHead className='text-right'>
                       {Formatter((yearIndex + 1) * (monthlyPayment * 12))}
                     </TableHead>
-                    <TableHead aria-label='profit dette år'>
+                    <TableHead className='text-right'>
                       {Formatter(profitThisYear)}
                     </TableHead>
-                    <TableHead aria-label='skat dette år'>
+                    <TableHead className='text-right'>
                       {Formatter(taxesThisYear)}
                     </TableHead>
                     <TableHead className='text-right'>
@@ -154,18 +118,6 @@ export default function Projections({
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow key={'magictwo'}>
-                <TableHead aria-label='år nummer'>Start</TableHead>
-                <TableHead aria-label='indskudt mængde'>
-                  {Formatter(monthlyPayment)}
-                </TableHead>
-                <TableHead aria-label='profit'>{Formatter(0)}</TableHead>
-                <TableHead aria-label='skat'>{Formatter(0)}</TableHead>
-                <TableHead aria-label='skat'>{Formatter(0)}</TableHead>
-                <TableHead className='text-right'>
-                  {Formatter(monthlyPayment)}
-                </TableHead>
-              </TableRow>
               {monthlyProgress.map((month, monthIndex) => {
                 if (typeof month === 'undefined') {
                   return null;
@@ -178,19 +130,17 @@ export default function Projections({
                 } = month;
                 return (
                   <TableRow key={valueThisMonth}>
-                    <TableHead aria-label='år nummer'>
-                      {monthIndex + 1}
-                    </TableHead>
-                    <TableHead aria-label='indskudt mængde'>
+                    <TableHead>{monthIndex + 1}</TableHead>
+                    <TableHead className='text-right'>
                       {Formatter((monthIndex + 1) * monthlyPayment)}
                     </TableHead>
-                    <TableHead aria-label='profit dette år'>
+                    <TableHead className='text-right'>
                       {Formatter(profitThisMonth)}
                     </TableHead>
-                    <TableHead aria-label='profit dette år'>
+                    <TableHead className='text-right'>
                       {Formatter(profitToThisMonth)}
                     </TableHead>
-                    <TableHead aria-label='skat dette år'>
+                    <TableHead className='text-right'>
                       {Formatter(taxesPaidSoFar)}
                     </TableHead>
                     <TableHead className='text-right'>

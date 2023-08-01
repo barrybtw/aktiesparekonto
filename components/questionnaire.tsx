@@ -16,13 +16,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useCalculatorStore } from '@/stores/calculator-store';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from './ui/tooltip';
-import { useMemo } from 'react';
 
 const formSchema = z.object({
   monthly_payment: z.coerce.number().min(0),
@@ -67,6 +60,9 @@ export default function Questionnaire({
             render={({ field }) => (
               <FormItem className='flex flex-col gap-2'>
                 <FormLabel>Månedlig indskud</FormLabel>
+                <FormDescription>
+                  Hvor meget kan du indbetale hver måned?
+                </FormDescription>
                 <FormControl>
                   <Input
                     {...field}
@@ -76,9 +72,6 @@ export default function Questionnaire({
                     min={0}
                   />
                 </FormControl>
-                <FormDescription>
-                  Hvor meget kan du indbetale hver måned?
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -89,6 +82,9 @@ export default function Questionnaire({
             render={({ field }) => (
               <FormItem className='flex flex-col gap-2'>
                 <FormLabel>Årlig Udbytteprocent</FormLabel>
+                <FormDescription>
+                  Hvor meget regner du med at få i afkast om året?
+                </FormDescription>
                 <FormControl>
                   <Input
                     {...field}
@@ -99,9 +95,6 @@ export default function Questionnaire({
                     type='number'
                   />
                 </FormControl>
-                <FormDescription>
-                  Hvor meget regner du med at få i afkast om året?
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -112,6 +105,9 @@ export default function Questionnaire({
             render={({ field }) => (
               <FormItem className='flex flex-col gap-2'>
                 <FormLabel>År til realisation</FormLabel>
+                <FormDescription>
+                  Hvor mange år er du villig til at vente på at realisere
+                </FormDescription>
                 <FormControl>
                   <Input
                     {...field}
@@ -120,9 +116,6 @@ export default function Questionnaire({
                     type='number'
                   />
                 </FormControl>
-                <FormDescription>
-                  Hvor mange år er du villig til at vente på at realisere
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
