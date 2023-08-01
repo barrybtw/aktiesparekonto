@@ -110,10 +110,10 @@ export default function Projections({
             <TableHeader>
               <TableRow>
                 <TableHead>Udgangsår</TableHead>
-                <TableHead>Indskudt</TableHead>
-                <TableHead>Profit</TableHead>
-                <TableHead>Total profit</TableHead>
-                <TableHead>Skat</TableHead>
+                <TableHead className='text-right'>Indskudt</TableHead>
+                <TableHead className='text-right'>Profit</TableHead>
+                <TableHead className='text-right'>Total profit</TableHead>
+                <TableHead className='text-right'>Skat</TableHead>
                 <TableHead className='text-right'>Total</TableHead>
               </TableRow>
             </TableHeader>
