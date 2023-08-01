@@ -14,17 +14,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { useStockCalculator } from '@/lib/calculate';
 
-const IntlFormatter = new Intl.NumberFormat('da-DK');
+const IntlFormatter = new Intl.NumberFormat('da-DK', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
-const Formatter = (value: number | `${number}`, decimals: number = 2) => {
-  let int = +value;
-  if (Number.isNaN(int)) {
+const Formatter = (value: number, decimals: number = 2) => {
+  if (Number.isNaN(value)) {
     throw new Error('Formatter only accepts numbers');
   }
 
-  int = +int.toFixed(decimals);
-
-  return IntlFormatter.format(int);
+  return IntlFormatter.format(value);
 };
 
 export default function Projections({
@@ -85,7 +85,7 @@ export default function Projections({
                 } = year;
                 return (
                   <TableRow key={valueThisYear}>
-                    <TableHeader>{yearIndex + 1}</TableHeader>
+                    <TableHead>{yearIndex + 1}</TableHead>
                     <TableHead className='text-right'>
                       {Formatter((yearIndex + 1) * (monthlyPayment * 12))}
                     </TableHead>
