@@ -73,7 +73,7 @@ export default function Projections({
   }
 
   return (
-    <div className={cn(className, 'flex flex-col space-y-4')}>
+    <div className={cn(className, 'flex flex-col space-y-4 mb-32')}>
       <Tabs
         defaultValue='years'
         className='[max-width:520px]:overflow-x-scroll w-full overflow-x-auto space-y-4'
