@@ -16,11 +16,8 @@ export default function ThemeSwitch() {
       )}
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
     >
-      {theme === 'dark' ? (
-        <SunIcon className='w-4 h-4' aria-label='go light' />
-      ) : (
-        <MoonIcon className='w-4 h-4' aria-label='go dark' />
-      )}
+      <SunIcon className='hidden w-4 h-4 dark:block' aria-label='go light' />
+      <MoonIcon className='block w-4 h-4 dark:hidden' aria-label='go dark' />
     </button>
   );
 }
