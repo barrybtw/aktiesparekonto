@@ -68,8 +68,6 @@ export default function Projections({
     years: yearsToLookAhead,
   });
 
-  console.log({ totals, monthlyProgress, yearlyProgress });
-
   if (typeof yearlyProgress === 'undefined') {
     return null;
   }
@@ -161,9 +159,9 @@ export default function Projections({
                 <TableHead aria-label='indskudt mængde'>
                   {Formatter(monthlyPayment)}
                 </TableHead>
-                <TableHead aria-label='profit'></TableHead>
-                <TableHead aria-label='profit'></TableHead>
-                <TableHead aria-label='skat'></TableHead>
+                <TableHead aria-label='profit'>{Formatter(0)}</TableHead>
+                <TableHead aria-label='skat'>{Formatter(0)}</TableHead>
+                <TableHead aria-label='skat'>{Formatter(0)}</TableHead>
                 <TableHead className='text-right'>
                   {Formatter(monthlyPayment)}
                 </TableHead>

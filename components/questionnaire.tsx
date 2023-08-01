@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from './ui/tooltip';
+import { useMemo } from 'react';
 
 const formSchema = z.object({
   monthly_payment: z.coerce.number().min(0),
@@ -51,9 +52,9 @@ export default function Questionnaire({
     );
     calculator_link.setYearsToLookAhead(values.years_to_look_ahead);
   }
+
   return (
     <Form {...form}>
-      {/* use grid to add a gap between formfields and button */}
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
         className={cn('space-y-12 grid-cols-1 gap-8', className)}
@@ -67,7 +68,6 @@ export default function Questionnaire({
               <FormItem className='flex flex-col gap-2'>
                 <FormLabel>Månedlig indskud</FormLabel>
                 <FormControl>
-                  {/* <div aria-label='wrapper' className='relative'> */}
                   <Input
                     {...field}
                     className='max-w-[280px] my-2'
@@ -77,10 +77,6 @@ export default function Questionnaire({
                     type='number'
                     min={0}
                   />
-                  {/* <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
-                        dkk
-                      </pre>
-                    </div> */}
                 </FormControl>
                 <FormDescription>
                   Hvor meget kan du indbetale hver måned?
@@ -96,7 +92,6 @@ export default function Questionnaire({
               <FormItem className='flex flex-col gap-2'>
                 <FormLabel>Årlig Udbytteprocent</FormLabel>
                 <FormControl>
-                  {/* <div aria-label='wrapper' className='relative'> */}
                   <Input
                     {...field}
                     className='max-w-[280px] my-2'
@@ -107,10 +102,6 @@ export default function Questionnaire({
                     }
                     type='number'
                   />
-                  {/* <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
-                        %
-                      </pre>
-                    </div> */}
                 </FormControl>
                 <FormDescription>
                   Hvor meget regner du med at få i afkast om året?
@@ -126,7 +117,6 @@ export default function Questionnaire({
               <FormItem className='flex flex-col gap-2'>
                 <FormLabel>År til realisation</FormLabel>
                 <FormControl>
-                  {/* <div aria-label='wrapper' className='relative'> */}
                   <Input
                     {...field}
                     className='max-w-[280px] my-2'
@@ -137,10 +127,6 @@ export default function Questionnaire({
                     }
                     type='number'
                   />
-                  {/* <pre className='absolute right-2 top-[7px] text-white/50 pointer-events-none'>
-                        år
-                      </pre> */}
-                  {/* </div> */}
                 </FormControl>
                 <FormDescription>
                   Hvor mange år er du villig til at vente på at realisere
